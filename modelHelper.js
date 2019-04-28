@@ -15,30 +15,10 @@ export default class BaseModel {
         return array;
     }
 
-    toFloatArray() {
-        return [];
-    }
-
-    toJsonArray() {
-        return [];
-    }
-
-    objInArray(obj, array) {
-        if (array) {
-            for (let index = 0; index < array.length; index++) {
-                const element = array[index];
-                if (element === obj) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        return false;
-    }
-
+    // 初始化方法
     initByJson(props) {
         if (props) {
-            for (var key in props) {
+            for (let key in props) {
                 const element = props[key];
                 if (element !== null && element !== undefined) {
                     if (this.objInArray(key, this.toFloatArray())) {
@@ -61,6 +41,27 @@ export default class BaseModel {
         }
     }
 
+    toFloatArray() {
+        return [];
+    }
+
+    toJsonArray() {
+        return [];
+    }
+
+    objInArray(obj, array) {
+        if (array) {
+            for (let index = 0; index < array.length; index++) {
+                const element = array[index];
+                if (element === obj) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
     modelKeyMapFunc(props) {
         let keyMap = this.keyMap();
         if (keyMap) {
@@ -71,11 +72,6 @@ export default class BaseModel {
                     this[oldKey] = props[newKey];
                 }
             })
-        }
-    }
-    keyMap() {
-        return {
-            "oldKey": 'newKey'
         }
     }
 
@@ -90,6 +86,15 @@ export default class BaseModel {
             }
         }
     }
+
+    // 新老键值映射
+    keyMap() {
+        return {
+            "oldKey": 'newKey'
+        }
+    }
+
+    // vlue格式化
     formatMap() {
         return {
             'key': (oldValue, self)=>{
@@ -98,6 +103,7 @@ export default class BaseModel {
         }
     }
 
+    // 比价连个对象是否相同
     isDiffWith(item) {
         if (item === undefined) {
             return true;
@@ -122,13 +128,5 @@ export default class BaseModel {
 
     clone() {
         return _.cloneDeep(this);
-    }
-
-    fomatSymbolNumber(number) {
-        return `${number>=0?'+':''}${number}`;
-    }
-
-    fomatSymbolNumberToFixed(number, fixed) {
-        return `${number>=0?'+':''}${number.toFixed(fixed)}`;
     }
 }
