@@ -1,6 +1,6 @@
 {
   "name": "modelhelper",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "用于快速创建js数据模型",
   "main": "modelHelper.js",
   "scripts": {
