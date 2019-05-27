@@ -1,8 +1,8 @@
 {
   "name": "modelhelper",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "用于快速创建js数据模型",
-  "main": "modelHelper.js",
+  "main": "src/modelHelper.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
