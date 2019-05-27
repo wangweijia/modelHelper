@@ -103,7 +103,7 @@ export default class BaseModel {
         }
     }
 
-    // 比价连个对象是否相同
+    // 比较两个对象是否相同
     isDiffWith(item) {
         if (item === undefined) {
             return true;
