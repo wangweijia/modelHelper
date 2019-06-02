@@ -1,12 +1,23 @@
 import _ from 'lodash';
-export default class BaseModel {
-    static initByList(list) {
+class BaseModel extends Object {
+    /**
+     * number
+     * 当使用 initByList 方法初始化列表的时候，会默认赋值index
+     */
+    elementIndex = 0;
+
+    /**
+     * 序列华初始
+     * @param {Array} list 
+     * @param {Number} baseIndex 序列号下标的起始值
+     */
+    static initByList(list, baseIndex = 0) {
         let array = [];
 
         for (let index = 0; index < list.length; index++) {
             const element = list[index];
             let item = new this({
-                elementIndex: index,
+                elementIndex: index + baseIndex,
                 ...element
             });
             array.push(item);
@@ -15,15 +26,29 @@ export default class BaseModel {
         return array;
     }
 
-    // 初始化方法
+    constructor(props) {
+        super(props);
+        const p = props || {};
+        this.initByJson(p);
+    }
+
+    thisClass() {
+        const c = this.__proto__.constructor;
+        return c;
+    }
+
+    /**
+     * 舒适化数据
+     * @param {Object} props 
+     */
     initByJson(props) {
         if (props) {
             for (let key in props) {
                 const element = props[key];
                 if (element !== null && element !== undefined) {
-                    if (this.objInArray(key, this.toFloatArray())) {
+                    if (this.objInArray(key, this.thisClass().toFloatArray())) {
                         this[key] = parseFloat(element);
-                    } else if (this.objInArray(key, this.toJsonArray())) {
+                    } else if (this.objInArray(key, this.thisClass().toJsonArray())) {
                         try {
                             this[key] = JSON.parse(element);
                         } catch(e) {
@@ -41,33 +66,24 @@ export default class BaseModel {
         }
     }
 
-    toFloatArray() {
-        return [];
-    }
-
-    toJsonArray() {
-        return [];
-    }
-
+    /**
+     * 判断 item 是否在 数组中
+     * @param String obj 
+     * @param {Array} array 
+     */
     objInArray(obj, array) {
         if (array) {
-            for (let index = 0; index < array.length; index++) {
-                const element = array[index];
-                if (element === obj) {
-                    return true;
-                }
-            }
-            return false;
+            return array.indexOf(obj) !== -1;
         }
         return false;
     }
 
     modelKeyMapFunc(props) {
-        let keyMap = this.keyMap();
+        let keyMap = this.thisClass().keyMap();
         if (keyMap) {
             let allKey = Object.keys(keyMap);
             allKey.map((oldKey)=>{
-                newKey = keyMap[oldKey];
+                const newKey = keyMap[oldKey];
                 if (props[newKey] != undefined && props[newKey] != null) {
                     this[oldKey] = props[newKey];
                 }
@@ -76,7 +92,7 @@ export default class BaseModel {
     }
 
     formatMapFunc(key, oldValue) {
-        let formatMap = this.formatMap();
+        let formatMap = this.thisClass().formatMap();
         if (formatMap[key]) {
             let newKey = `${key}_format`;
             let func = formatMap[key];
@@ -87,15 +103,33 @@ export default class BaseModel {
         }
     }
 
-    // 新老键值映射
-    keyMap() {
+    /**
+     * 定义需要 默认转行为 float 类型的 原始数据 key 值列表
+     */
+    static toFloatArray() {
+        return [];
+    }
+
+    /**
+     * 定义需要 默认转行为 Array 类型的 原始数据 key 值列表
+     */
+    static toJsonArray() {
+        return [];
+    }
+
+    /**
+     * 定义原始数据 和 数据模型 键值映射
+     */
+    static keyMap() {
         return {
-            "oldKey": 'newKey'
+            "newKey": 'oldKey'
         }
     }
 
-    // vlue格式化
-    formatMap() {
+    /**
+     * 自定义模型属性初始化方法
+     */
+    static formatMap() {
         return {
             'key': (oldValue, self)=>{
 
@@ -103,13 +137,23 @@ export default class BaseModel {
         }
     }
 
-    // 比较两个对象是否相同
+    /**
+     * 自定义 数据模型 diff 比较方法 比较键值
+     */
+    static diffKeys() {
+        return undefined;
+    }
+
+    /**
+     * 比较两个对象是否相同(之不比价对应属性)
+     * @param {Object} item 
+     */
     isDiffWith(item) {
         if (item === undefined) {
             return true;
         }
-        if (this.diffKeys) {
-            let keys = this.diffKeys();
+        let keys = this.thisClass().diffKeys();
+        if (keys) {
             for (let index = 0; index < keys.length; index++) {
                 const key = keys[index];
                 if (item[key] !== undefined && this[key] !== undefined) {
@@ -122,11 +166,17 @@ export default class BaseModel {
                     return true;
                 }
             }
+        } else {
+            return JSON.stringify(this) === JSON.stringify(item);
         }
-        return false;
     }
 
+    /**
+     * 数据模型深拷贝
+     */
     clone() {
         return _.cloneDeep(this);
     }
 }
+
+export default BaseModel;
