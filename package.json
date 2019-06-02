@@ -1,12 +1,13 @@
 {
   "name": "modelhelper",
-  "version": "1.1.2",
+  "version": "1.1.10",
   "description": "用于快速创建js数据模型",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.config.js",
-    "webpack": "webpack -p"
+    "webpack": "webpack -p",
+    "myPublish": "webpack --config webpack.config.js && npm publish"
   },
   "keywords": [
     "model"

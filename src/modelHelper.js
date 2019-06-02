@@ -46,9 +46,9 @@ class BaseModel extends Object {
             for (let key in props) {
                 const element = props[key];
                 if (element !== null && element !== undefined) {
-                    if (this.objInArray(key, this.thisClass().toFloatArray())) {
-                        this[key] = parseFloat(element);
-                    } else if (this.objInArray(key, this.thisClass().toJsonArray())) {
+                    if (this.objInArray(key, this.thisClass().toNumber())) {
+                        this[key] = Number(element);
+                    } else if (this.objInArray(key, this.thisClass().toObject())) {
                         try {
                             this[key] = JSON.parse(element);
                         } catch(e) {
@@ -106,14 +106,14 @@ class BaseModel extends Object {
     /**
      * 定义需要 默认转行为 float 类型的 原始数据 key 值列表
      */
-    static toFloatArray() {
+    static toNumber() {
         return [];
     }
 
     /**
      * 定义需要 默认转行为 Array 类型的 原始数据 key 值列表
      */
-    static toJsonArray() {
+    static toObject() {
         return [];
     }
 
